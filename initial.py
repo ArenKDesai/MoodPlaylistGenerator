@@ -4,6 +4,7 @@ import os
 from requests import post, get
 import base64
 import json
+import numpy as np
 load_dotenv()
 
 def get_token():
@@ -62,12 +63,33 @@ def vectorize_song(token, song):
     songVec.append(songAcoustics["valence"])
     songVec.append(songAcoustics["tempo"])
     # Fields like duration_ms, time_signature, and id are not included
-    return songVec
+    return np.array(songVec)
 
-def get_recommendations(token, )
+def get_recommendation_vector(token, song_list):
+    recVec = np.zeros(11)
+    for song in song_list:
+        songVec = vectorize_song(token, song)
+        recVec += songVec
+    recVec /= len(song_list)
+    return recVec
+        
+
+def get_recommendations(token, song, limit=1):
+    url = "https://api.spotify.com/v1/recommendations?limit=" + str(limit)
+    headers = get_auth_header(token)
+    songId = song["id"]
+    songAcoustics = get_acoustics(token, songId)
+    songVec = vectorize_song(token, song)
+    songVec = [str(x) for x in songVec]
+    songVec = ",".join(songVec)
+    query = f'&seed_tracks={songId}&target_acousticness={songAcoustics["acousticness"]}&target_danceability={songAcoustics["danceability"]}&target_energy={songAcoustics["energy"]}&target_instrumentalness={songAcoustics["instrumentalness"]}&target_liveness={songAcoustics["liveness"]}&target_loudness={songAcoustics["loudness"]}&target_speechiness={songAcoustics["speechiness"]}&target_tempo={songAcoustics["tempo"]}&target_valence={songAcoustics["valence"]}'
+    query_url = url + query
+    result = get(query_url, headers=headers)
+    json_result = json.loads(result.content)
+    return json_result
 
 if __name__ == '__main__':
-    songName = "Name of Love"
+    songName = "Mr, Kill Myself"
     song = search_song(get_token(), songName)["tracks"]["items"][0]
-    vec = vectorize_song(get_token(), song)
-    print(vec)
+    recs = get_recommendations(get_token(), song, 5)
+    print(recs["tracks"][1]["name"])
