@@ -28,11 +28,11 @@ def get_auth_header(token):
     # From https://www.youtube.com/watch?v=WAmEZBEeNmg
     return {"Authorization": "Bearer " + token}
 
-def search_song(token, songName):
+def search_song(token, songName, limit=1):
     # From https://www.youtube.com/watch?v=WAmEZBEeNmg
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
-    query = f'?q={songName}&type=track&limit=1'
+    query = f'?q={songName}&type=track&limit=' + str(limit)
     query_url = url + query
     result = get(query_url, headers=headers)
     json_result = json.loads(result.content)
@@ -45,7 +45,9 @@ def get_acoustics(token, songId):
     json_result = json.loads(result.content)
     return json_result
 
-def vectorize_song(token, songId):
+# Input: token, song in form of search_song(get_token(), songName)["tracks"]["items"][0]
+def vectorize_song(token, song):
+    songId = song["id"]
     songAcoustics = get_acoustics(token, songId)
     songVec = []
     songVec.append(songAcoustics["danceability"])
@@ -62,7 +64,10 @@ def vectorize_song(token, songId):
     # Fields like duration_ms, time_signature, and id are not included
     return songVec
 
+def get_recommendations(token, )
+
 if __name__ == '__main__':
     songName = "Name of Love"
-    songId = search_song(get_token(), songName)["tracks"]["items"][0]["id"]
-    print(vectorize_song(get_token(), songId))
+    song = search_song(get_token(), songName)["tracks"]["items"][0]
+    vec = vectorize_song(get_token(), song)
+    print(vec)
