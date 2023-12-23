@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<script src="https://sdk.scdn.co/spotify-player.js"></script>
+<script>
+    window.onSpotifyWebPlaybackSDKReady = () => {
+  const token = 'BQDloDKIySrpbuKJrWLHfu7Bt4dtb0XvYhYbmkzEyRCkcO07cKLAhFumF7qcZH1B_nuOk91qEu7_Xkr8JAJxnoY4QnGwmytvgowMDQI4xp7viNUv_NnX23dwsLr9MOCw0IqEtOw3TG5LIElyejN6cnaT-lAdB413SoZpDgjrZVbccPppxQ8P2P8H2qifTrM9lTKpncTo';
+  const player = new Spotify.Player({
+    name: 'Web Playback SDK Quick Start Player',
+    getOAuthToken: cb => { cb(token); },
+    volume: 0.5
+    });
+};
+
+</script>
+<html>
+  <head>
+    <title>Spotify Web Playback SDK Quick Start</title>
+  </head>
+  <body>
+    <h1>Spotify Web Playback SDK Quick Start</h1>
+  </body>
+</html>
