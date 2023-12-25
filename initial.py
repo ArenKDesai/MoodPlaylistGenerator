@@ -1,4 +1,3 @@
-# Imports
 from dotenv import load_dotenv
 import os
 from requests import post, get
@@ -88,8 +87,26 @@ def get_recommendations(token, song, limit=1):
     json_result = json.loads(result.content)
     return json_result
 
+def get_next_song(token, basevec, user_song, listened_songs):
+    recs = get_recommendations(token, user_song, 5)
+    temporary_basevec = vectorize_song(token, user_song)
+    best_song = None
+    best_dist = None
+    for song_rec in recs["tracks"]:
+        second_recs = get_recommendations(token, song_rec, 5)
+        for song in second_recs["tracks"]:
+            if song["name"] in listened_songs:
+                continue
+            song_vec = vectorize_song(token, song)
+            if(best_song == None or best_dist > np.linalg.norm(temporary_basevec - song_vec)):
+                best_song = song
+                best_dist = np.linalg.norm(temporary_basevec - song_vec)
+    return best_song
+
 if __name__ == '__main__':
-    songName = "Mr, Kill Myself"
-    song = search_song(get_token(), songName)["tracks"]["items"][0]
-    recs = get_recommendations(get_token(), song, 5)
-    print(recs["tracks"][1]["name"])
+    listened_songs = []
+    songName = "Mr. Brightside"
+    token = get_token()
+    song = search_song(token, songName)["tracks"]["items"][0]
+    listened_songs.append(song["name"])
+    print(get_next_song(token, 5, song, listened_songs)["name"])

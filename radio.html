@@ -1,21 +1,52 @@
-<!DOCTYPE html>
-<script src="https://sdk.scdn.co/spotify-player.js"></script>
-<script>
-    window.onSpotifyWebPlaybackSDKReady = () => {
-  const token = 'BQDloDKIySrpbuKJrWLHfu7Bt4dtb0XvYhYbmkzEyRCkcO07cKLAhFumF7qcZH1B_nuOk91qEu7_Xkr8JAJxnoY4QnGwmytvgowMDQI4xp7viNUv_NnX23dwsLr9MOCw0IqEtOw3TG5LIElyejN6cnaT-lAdB413SoZpDgjrZVbccPppxQ8P2P8H2qifTrM9lTKpncTo';
-  const player = new Spotify.Player({
-    name: 'Web Playback SDK Quick Start Player',
-    getOAuthToken: cb => { cb(token); },
-    volume: 0.5
-    });
-};
 
-</script>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Spotify Web Playback SDK Quick Start</title>
-  </head>
-  <body>
-    <h1>Spotify Web Playback SDK Quick Start</h1>
-  </body>
+<head>
+    <title>Mood Radio</title>
+</head>
+<body>
+    <h1>Mood Radio</h1>
+    <button id="togglePlay">Toggle Play</button>
+
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script>
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            const token = 'BQD3m6pEHjyEU5dAt7DyemirL6KHIfrKkaDWl_0DI4Uy9vv5m0pDhRLW-n7We3h06IUoHu4Qp3y0niFX6ojzCgMsqIDP2n5v-GoL2SEjIxfL7dffaD3Q6N77Kgu_rJqCCBRSckQ5lTpg-hInnlEmQkmV2WJbFbcoQlF0o8V6_BugE2RSHOmfKo7xn98Ss9iDI5Mne0mM';
+            const player = new Spotify.Player({
+                name: 'Web Playback SDK Quick Start Player',
+                getOAuthToken: cb => { cb(token); },
+                volume: 0.5
+            });
+
+            // Ready
+            player.addListener('ready', ({ device_id }) => {
+                console.log('Ready with Device ID', device_id);
+            });
+
+            // Not Ready
+            player.addListener('not_ready', ({ device_id }) => {
+                console.log('Device ID has gone offline', device_id);
+            });
+
+            player.addListener('initialization_error', ({ message }) => {
+                console.error(message);
+            });
+
+            player.addListener('authentication_error', ({ message }) => {
+                console.error(message);
+            });
+
+            player.addListener('account_error', ({ message }) => {
+                console.error(message);
+            });
+
+            document.getElementById('togglePlay').onclick = function() {
+              player.togglePlay();
+              console.log('Toggled playback!');
+            };
+
+            player.connect();
+        }
+    </script>
+</body>
 </html>
