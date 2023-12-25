@@ -1,17 +1,57 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Mood Radio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINT Radio</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #FAF9F6;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #3EB489;
+        }
+
+        button {
+            background-color: #3EB489;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #168f3f;
+        }
+
+        input[type="range"] {
+            width: 25%;
+            margin-top: 20px;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Mood Radio</h1>
+    <h1>MINT Radio</h1>
+    <button id="previousTrack">←</button>
     <button id="togglePlay">Toggle Play</button>
+    <button id="nextTrack">→</button>
+    <br>
+    <input type="range" id="volumeSlider" min="0" max="100" step="1" value="50">
 
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = 'BQD3m6pEHjyEU5dAt7DyemirL6KHIfrKkaDWl_0DI4Uy9vv5m0pDhRLW-n7We3h06IUoHu4Qp3y0niFX6ojzCgMsqIDP2n5v-GoL2SEjIxfL7dffaD3Q6N77Kgu_rJqCCBRSckQ5lTpg-hInnlEmQkmV2WJbFbcoQlF0o8V6_BugE2RSHOmfKo7xn98Ss9iDI5Mne0mM';
+            const token = 'BQBAlouqFlMKnUGlkY0JliHA_x5gg0adseDER4_MJE3ZAqTbvVohHWkNoEVbzz2RLHCTjc5iuhEGUvgZhCf4vNnE0eWE2mgccLOiNuGRIeSvqDMIh_R7dRD75h5zC30L_OsMvmkghC7fwAtnu5BwUZ_Bj1WreYopwwadthm-JIjH3sPkqx6msM-LEPNVY6ntMqfkD6C1';
             const player = new Spotify.Player({
                 name: 'Web Playback SDK Quick Start Player',
                 getOAuthToken: cb => { cb(token); },
@@ -44,6 +84,27 @@
               player.togglePlay();
               console.log('Toggled playback!');
             };
+
+            document.getElementById('nextTrack').onclick = function() {
+                player.nextTrack().then(() => {
+                    console.log('Skipped to next track!');
+                });
+            };
+
+            document.getElementById('previousTrack').onclick = function() {
+                player.previousTrack().then(() => {
+                    console.log('Set to previous track!');
+                });
+            };
+
+            // Volume Slider
+            const volumeSlider = document.getElementById('volumeSlider');
+            volumeSlider.addEventListener('input', function() {
+                const volumeValue = this.value / 100; // Convert to a value between 0 and 1
+                player.setVolume(volumeValue).then(() => {
+                    console.log('Volume updated!');
+                });
+            });
 
             player.connect();
         }
