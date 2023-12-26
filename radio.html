@@ -42,8 +42,14 @@
 </head>
 <body>
     <h1>MINT Radio</h1>
+    <form action="start_radio">
+        <textarea id="song_list" name="song_list" rows="4" cols="50">Input songs separated by ", "</textarea>
+        <br>
+        <button>Submit</button>
+      </form>
+      
     <button id="previousTrack">←</button>
-    <button id="togglePlay">Toggle Play</button>
+    <button id="togglePlay">Play/Pause</button>
     <button id="nextTrack">→</button>
     <br>
     <input type="range" id="volumeSlider" min="0" max="100" step="1" value="50">
@@ -53,7 +59,7 @@
         window.onSpotifyWebPlaybackSDKReady = () => {
             const token = 'BQBAlouqFlMKnUGlkY0JliHA_x5gg0adseDER4_MJE3ZAqTbvVohHWkNoEVbzz2RLHCTjc5iuhEGUvgZhCf4vNnE0eWE2mgccLOiNuGRIeSvqDMIh_R7dRD75h5zC30L_OsMvmkghC7fwAtnu5BwUZ_Bj1WreYopwwadthm-JIjH3sPkqx6msM-LEPNVY6ntMqfkD6C1';
             const player = new Spotify.Player({
-                name: 'Web Playback SDK Quick Start Player',
+                name: 'Mint Radio',
                 getOAuthToken: cb => { cb(token); },
                 volume: 0.5
             });

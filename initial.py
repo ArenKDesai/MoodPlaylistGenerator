@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
-from requests import post, get
+from requests import post, get, put
+import requests
 import base64
 import json
 import numpy as np
@@ -103,10 +104,19 @@ def get_next_song(token, basevec, user_song, listened_songs):
                 best_dist = np.linalg.norm(temporary_basevec - song_vec)
     return best_song
 
+def start_song(token, song):
+    url = "https://api.spotify.com/v1/me/player/play"
+    headers = get_auth_header(token)
+    songUri = song["uri"]
+    data = {"context_uri": songUri}
+    result = put(url, headers=headers, json=data)
+    json_result = json.loads(result.content)
+    return json_result
+    
+
 if __name__ == '__main__':
     listened_songs = []
     songName = "Mr. Brightside"
     token = get_token()
     song = search_song(token, songName)["tracks"]["items"][0]
-    listened_songs.append(song["name"])
-    print(get_next_song(token, 5, song, listened_songs)["name"])
+    print(start_song(token, song))
